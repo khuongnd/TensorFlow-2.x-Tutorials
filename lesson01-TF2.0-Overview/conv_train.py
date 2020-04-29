@@ -9,7 +9,7 @@ from tensorflow.keras import datasets, layers, models, optimizers, metrics
 
 
 def create_model():
-    model = tf.keras.Sequential([
+    model = keras.Sequential([
         layers.Reshape(
             target_shape=[28, 28, 1],
             input_shape=(28, 28,)),
@@ -114,6 +114,7 @@ if __name__ == "__main__":
     apply_clean()
 
     model = create_model()
+    model.summary()
     checkpoint_dir = os.path.join(MODEL_DIR, 'checkpoints')
     checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
     compute_loss, compute_accuracy, optimizer = complie_model()
