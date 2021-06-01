@@ -34,9 +34,12 @@ def main():
     model = keras.Sequential([
         layers.Reshape(target_shape=(28 * 28,), input_shape=(28, 28)),
         layers.Dense(200, activation='relu'),
+        layers.BatchNormalization(),
         layers.Dense(200, activation='relu'),
+        layers.BatchNormalization(),
         layers.Dense(200, activation='relu'),
-        layers.Dense(10)])
+        layers.Dense(10)
+    ])
     # no need to use compile if you have no loss/optimizer/metrics involved here.
     model.compile(optimizer=optimizers.Adam(0.001),
                   loss=tf.losses.CategoricalCrossentropy(from_logits=True),
