@@ -2,6 +2,7 @@ import os
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers, optimizers, datasets
+from pagi.utils.data import tf_get_mnist_dataset
 
 
 def prepare_mnist_features_and_labels(x, y):
