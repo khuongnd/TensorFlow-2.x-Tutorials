@@ -64,43 +64,29 @@ def main():
     test_loader = test_loader.map(prepare_cifar).shuffle(10000).batch(256)
     print('done.')
 
-    model = VGG16([32, 32, 3])
+    model = VGG16([32, 32, 3], weight_decay=0.01, num_classes=10)
 
     # must specify from_logits=True!
     criteon = keras.losses.CategoricalCrossentropy(from_logits=True)
     metric = keras.metrics.CategoricalAccuracy()
-
     optimizer = optimizers.Adam(learning_rate=0.0001)
 
     for epoch in range(250):
-
         for step, (x, y) in enumerate(train_loader):
-            # [b, 1] => [b]
             y = tf.squeeze(y, axis=1)
-            # [b, 10]
             y = tf.one_hot(y, depth=10)
-
             with tf.GradientTape() as tape:
                 logits = model(x)
                 loss = criteon(y, logits)
-                # loss2 = compute_loss(logits, tf.argmax(y, axis=1))
-                # mse_loss = tf.reduce_sum(tf.square(y-logits))
-                # print(y.shape, logits.shape)
                 metric.update_state(y, logits)
-
             grads = tape.gradient(loss, model.trainable_variables)
-            # MUST clip gradient here or it will disconverge!
             grads = [tf.clip_by_norm(g, 15) for g in grads]
             optimizer.apply_gradients(zip(grads, model.trainable_variables))
-
-            if step % 40 == 0:
-                # for g in grads:
-                #     print(tf.norm(g).numpy())
+            if step % 100 == 0:
                 print(epoch, step, 'loss:', float(loss), 'acc:', metric.result().numpy())
                 metric.reset_states()
 
         if epoch % 10 == 0:
-
             metric = keras.metrics.CategoricalAccuracy()
             for x, y in test_loader:
                 # [b, 1] => [b]
