@@ -134,7 +134,7 @@ class ResNet(keras.Model):
 def main():
     num_classes = 10
     batch_size = 32
-    epochs = 1
+    epochs = 20
 
     # build model and optimizer
     model = ResNet([2, 2, 2], num_classes)
