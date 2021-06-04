@@ -1,22 +1,15 @@
-import  os
-import  tensorflow as tf
-import  numpy as np
-from    tensorflow import keras
-
-
-# In[1]:
-
+import os
+import tensorflow as tf
+import numpy as np
+from tensorflow import keras
 
 tf.random.set_seed(22)
 np.random.seed(22)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 assert tf.__version__.startswith('2.')
 
-
-
-
 (x_train, y_train), (x_test, y_test) = keras.datasets.fashion_mnist.load_data()
-x_train, x_test = x_train.astype(np.float32)/255., x_test.astype(np.float32)/255.
+x_train, x_test = x_train.astype(np.float32) / 255., x_test.astype(np.float32) / 255.
 # [b, 28, 28] => [b, 28, 28, 1]
 x_train, x_test = np.expand_dims(x_train, axis=3), np.expand_dims(x_test, axis=3)
 # one hot encode the labels. convert back to numpy as we cannot use a combination of numpy
@@ -24,19 +17,16 @@ x_train, x_test = np.expand_dims(x_train, axis=3), np.expand_dims(x_test, axis=3
 y_train_ohe = tf.one_hot(y_train, depth=10).numpy()
 y_test_ohe = tf.one_hot(y_test, depth=10).numpy()
 
-# In[2]:
-
-
 print(x_train.shape, y_train.shape)
 print(x_test.shape, y_test.shape)
-
 
 
 # 3x3 convolution
 def conv3x3(channels, stride=1, kernel=(3, 3)):
     return keras.layers.Conv2D(channels, kernel, strides=stride, padding='same',
                                use_bias=False,
-                            kernel_initializer=tf.random_normal_initializer())
+                               kernel_initializer=tf.random_normal_initializer())
+
 
 class ResnetBlock(keras.Model):
 
@@ -126,10 +116,8 @@ class ResNet(keras.Model):
         out = self.avg_pool(out)
         out = self.fc(out)
 
-
         return out
 
-# In[3]:
 
 def main():
     num_classes = 10
@@ -152,8 +140,6 @@ def main():
     # evaluate on test set
     scores = model.evaluate(x_test, y_test_ohe, batch_size, verbose=1)
     print("Final test loss and accuracy :", scores)
-
-
 
 
 if __name__ == '__main__':
