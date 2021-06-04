@@ -1,8 +1,7 @@
-import  os
-import  tensorflow as tf
-import  numpy as np
-from    tensorflow import keras
-
+import os
+import tensorflow as tf
+import numpy as np
+from tensorflow import keras
 
 # In[16]:
 
@@ -11,8 +10,6 @@ tf.random.set_seed(22)
 np.random.seed(22)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 assert tf.__version__.startswith('2.')
-
-
 
 # fix random seed for reproducibility
 np.random.seed(7)
@@ -35,7 +32,6 @@ class RNN(keras.Model):
     def __init__(self, units, num_classes, num_layers):
         super(RNN, self).__init__()
 
-
         # self.cells = [keras.layers.LSTMCell(units) for _ in range(num_layers)]
         #
         # self.rnn = keras.layers.RNN(self.cells, unroll=True)
@@ -48,20 +44,18 @@ class RNN(keras.Model):
         # self.rnn = keras.layers.LSTM(units, unroll=True)
         # self.rnn = keras.layers.StackedRNNCells(self.cells)
 
-
         # have 1000 words totally, every word will be embedding into 100 length vector
         # the max sentence lenght is 80 words
         self.embedding = keras.layers.Embedding(top_words, 100, input_length=max_review_length)
         self.fc = keras.layers.Dense(1)
 
     def call(self, inputs, training=None, mask=None):
-
         # print('x', inputs.shape)
         # [b, sentence len] => [b, sentence len, word embedding]
         x = self.embedding(inputs)
         # print('embedding', x.shape)
-        x = self.rnn(x) 
-        x = self.rnn2(x) 
+        x = self.rnn(x)
+        x = self.rnn2(x)
         # print('rnn', x.shape)
 
         x = self.fc(x)
@@ -71,14 +65,12 @@ class RNN(keras.Model):
 
 
 def main():
-
     units = 64
     num_classes = 2
     batch_size = 32
     epochs = 20
 
     model = RNN(units, num_classes, num_layers=2)
-
 
     model.compile(optimizer=keras.optimizers.Adam(0.001),
                   loss=keras.losses.BinaryCrossentropy(from_logits=True),
@@ -91,8 +83,6 @@ def main():
     # evaluate on test set
     scores = model.evaluate(x_test, y_test, batch_size, verbose=1)
     print("Final test loss and accuracy :", scores)
-
-
 
 
 if __name__ == '__main__':
